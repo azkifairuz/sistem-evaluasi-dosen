@@ -90,9 +90,9 @@ model SemesterAktif {
 model RiwayatMasuk {
   id       Int      @id @default(autoincrement())
   nidn     String
-  jam      DateTime @db.Time()
+  jam      String 
   hari     String
-  tanggal  DateTime @db.Date
+  tanggal  String 
   kegiatan Kegiatan
   tipe     Tipe
   dosen    Dosen    @relation(fields: [nidn], references: [nidn])

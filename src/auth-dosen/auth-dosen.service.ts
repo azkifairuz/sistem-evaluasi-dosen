@@ -91,6 +91,5 @@ export class AuthDosenService {
         message: `server error: ${error}`,
       };
     }
-    return;
   }
 }
