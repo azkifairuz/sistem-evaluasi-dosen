@@ -30,7 +30,7 @@ model Account {
   uuid         String         @id
   username     String
   password     String
-  token        String?
+  token        String? @db.VarChar(255)
   AccountRole  AccountRole[]
   DosenAccount DosenAccount[]
   StafAccount  StafAccount[]
