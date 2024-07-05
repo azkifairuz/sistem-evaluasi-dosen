@@ -21,4 +21,11 @@ export class DosenPresensiController {
   ): Promise<BaseResponse<string>> {
     return await this.presensiService.presensiOnline(account);
   }
+
+  @Post('/checkout')
+  async checkout(
+    @Authentication() account: Account,
+  ): Promise<BaseResponse<string>> {
+    return await this.presensiService.checkout(account);
+  }
 }
