@@ -10,10 +10,10 @@ datasource db {
 model Dosen {
   nidn               String         @id
   nama               String
-  program_studi      Int
+  program_studi      String
   jenjang_pendidikan String
   jenis_kelamin      String
-  tanggal_lahir      String
+  tanggal_lahir      DateTime @db.Date
   jabatan_akademik   String
   no_telephone       String
   alamat_surel       String
@@ -30,7 +30,7 @@ model Account {
   uuid         String         @id
   username     String
   password     String
-  token        String
+  token        String?
   AccountRole  AccountRole[]
   DosenAccount DosenAccount[]
   StafAccount  StafAccount[]
