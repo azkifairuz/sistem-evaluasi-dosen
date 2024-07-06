@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { DosenProfileService } from './dosen-profile.service';
 import { Authentication } from 'src/common/auth.decorator';
 import { Account } from '@prisma/client';
@@ -14,5 +14,13 @@ export class DosenProfileController {
     @Authentication() account: Account,
   ): Promise<BaseResponse<DosenProfile>> {
     return await this.dosenProfileService.getProfile(account);
+  }
+
+  @Post()
+  async updateDosenProfile(
+    @Authentication() account: Account,
+    @Body() request: DosenProfile,
+  ): Promise<BaseResponse<string>> {
+    return await this.dosenProfileService.updateBiodata(account, request);
   }
 }
