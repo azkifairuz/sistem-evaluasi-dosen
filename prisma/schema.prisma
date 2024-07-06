@@ -13,7 +13,7 @@ model Dosen {
   program_studi      String
   jenjang_pendidikan String
   jenis_kelamin      String
-  tanggal_lahir      DateTime @db.Date
+  tanggal_lahir      DateTime       @db.Date
   jabatan_akademik   String
   no_telephone       String
   alamat_surel       String
@@ -30,7 +30,7 @@ model Account {
   uuid         String         @id
   username     String
   password     String
-  token        String? @db.VarChar(255)
+  token        String?        @db.VarChar(255)
   AccountRole  AccountRole[]
   DosenAccount DosenAccount[]
   StafAccount  StafAccount[]
@@ -90,9 +90,9 @@ model SemesterAktif {
 model RiwayatMasuk {
   id       Int      @id @default(autoincrement())
   nidn     String
-  jam      String 
+  jam      String
   hari     String
-  tanggal  String 
+  tanggal  String
   kegiatan Kegiatan
   tipe     Tipe
   dosen    Dosen    @relation(fields: [nidn], references: [nidn])
@@ -138,11 +138,12 @@ model DosenJadwal {
 }
 
 model Izin {
-  id     Int    @id @default(autoincrement())
-  nidn   String
-  alasan String
-  bukti  String
-  dosen  Dosen  @relation(fields: [nidn], references: [nidn])
+  id      Int    @id @default(autoincrement())
+  nidn    String
+  alasan  String
+  bukti   String
+  tanggal String 
+  dosen   Dosen  @relation(fields: [nidn], references: [nidn])
 }
 
 model Jurnal {
