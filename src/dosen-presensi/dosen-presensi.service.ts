@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Account } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma.service';
 import { BaseResponse } from 'src/model/BaseResponse.model';
+import { uploadFile } from 'src/utils/fileUploadBucket';
 
 @Injectable()
 export class DosenPresensiService {
@@ -31,6 +32,17 @@ export class DosenPresensiService {
       const currentDate = new Date().toISOString().split('T')[0];
 
       const today = date.toLocaleDateString('id-ID', { weekday: 'long' });
+      const isAlreadyIzinToday = await this.prismaService.izin.findFirst({
+        where: {
+          tanggal: currentDate,
+        },
+      });
+      if (isAlreadyIzinToday) {
+        return {
+          status_code: 400,
+          message: 'presensi failed: dosen already izin today',
+        };
+      }
       const isAlreadyCheckIn = await this.prismaService.riwayatMasuk.findFirst({
         where: {
           AND: [
@@ -91,6 +103,17 @@ export class DosenPresensiService {
       const currentDate = new Date().toISOString().split('T')[0];
 
       const today = date.toLocaleDateString('id-ID', { weekday: 'long' });
+      const isAlreadyIzinToday = await this.prismaService.izin.findFirst({
+        where: {
+          tanggal: currentDate,
+        },
+      });
+      if (isAlreadyIzinToday) {
+        return {
+          status_code: 400,
+          message: 'presensi failed: dosen already izin today',
+        };
+      }
       const isAlreadyCheckIn = await this.prismaService.riwayatMasuk.findFirst({
         where: {
           AND: [
@@ -195,6 +218,51 @@ export class DosenPresensiService {
       return {
         status_code: HttpStatus.INTERNAL_SERVER_ERROR,
         message: `error: ${error}`,
+      };
+    }
+  }
+
+  async izin(
+    account: Account,
+    reason: string,
+    file: Express.Multer.File,
+  ): Promise<BaseResponse<string>> {
+    try {
+      const fileUrl = await uploadFile(file);
+      const dosesnAcc = await this.prismaService.dosenAccount.findFirst({
+        where: {
+          account_id: account.uuid,
+        },
+      });
+      const currentDate = new Date().toISOString().split('T')[0];
+      const isAlreadyIzinToday = await this.prismaService.izin.findFirst({
+        where: {
+          tanggal: currentDate,
+        },
+      });
+      if (isAlreadyIzinToday) {
+        return {
+          status_code: 400,
+          message: 'izin failed: dosen already izin today',
+        };
+      }
+
+      await this.prismaService.izin.create({
+        data: {
+          alasan: reason,
+          bukti: fileUrl,
+          nidn: dosesnAcc.nidn,
+          tanggal: currentDate,
+        },
+      });
+      return {
+        status_code: HttpStatus.ACCEPTED,
+        message: 'izin success',
+      };
+    } catch (error) {
+      return {
+        status_code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: `izin failed: ${error}`,
       };
     }
   }
