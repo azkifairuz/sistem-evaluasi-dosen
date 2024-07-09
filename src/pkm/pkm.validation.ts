@@ -2,12 +2,6 @@ import { ZodType, z } from 'zod';
 
 export class PkmValidation {
   static readonly PKM_SCHEMA: ZodType = z.object({
-    NIDN: z.string().min(1, 'NIDN tidak boleh kosong').max(100),
-    semesterAktif: z
-      .number()
-      .positive()
-      .int()
-      .min(1, 'Semester Aktif tidak boleh kosong'), // Ensures semesterAktif is a positive integer
     judul: z
       .string()
       .min(1, 'Judul tidak boleh kosong')
@@ -32,8 +26,5 @@ export class PkmValidation {
       .string()
       .min(1, 'Nomor SK Pengesahan tidak boleh kosong')
       .max(50, 'Nomor SK Pengesahan terlalu panjang'),
-    upload_document: z
-      .string()
-      .url('Upload Document harus berupa URL yang valid'),
   });
 }

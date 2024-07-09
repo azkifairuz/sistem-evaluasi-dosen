@@ -3,7 +3,9 @@ import { Account } from '@prisma/client';
 import { PrismaService } from 'src/common/prisma.service';
 import { ValidationService } from 'src/common/validation.service';
 import { BaseResponse, PaginationData } from 'src/model/BaseResponse.model';
-import { pkm } from 'src/model/Pkm.model';
+import { PkmRequest, pkm } from 'src/model/Pkm.model';
+import { PkmValidation } from './pkm.validation';
+import { uploadFile } from 'src/utils/fileUploadBucket';
 
 @Injectable()
 export class PkmService {
@@ -74,5 +76,53 @@ export class PkmService {
         message: 'succes get list pkm',
       };
     } catch (error) {}
+  }
+
+  async createPkm(
+    account: Account,
+    request: PkmRequest,
+    document: Express.Multer.File,
+  ): Promise<BaseResponse<string>> {
+    try {
+      const dosen = await this.prismaService.dosenAccount.findFirst({
+        where: {
+          account_id: account.uuid,
+        },
+      });
+
+      const pkmRequest: PkmRequest = this.validationService.validate(
+        PkmValidation.PKM_SCHEMA,
+        request,
+      );
+
+      const semesterActive = await this.prismaService.semesterAktif.findFirst({
+        where: {
+          status: 'active',
+        },
+      });
+      const fileUrl = await uploadFile(document);
+      await this.prismaService.pKM.create({
+        data: {
+          judul: pkmRequest.judul,
+          lama_kegiatan: pkmRequest.lama_kegiatan,
+          lokasi_kegiatan: pkmRequest.lokasi_kegiatan,
+          nomor_sk_pengesahan: pkmRequest.nomor_sk_pengesahan,
+          tahun_pelaksanaan: pkmRequest.tahun_pelaksanaan,
+          upload_document: fileUrl,
+          nidn: dosen.nidn,
+          semesterAktif: semesterActive.id,
+        },
+      });
+
+      return {
+        status_code: HttpStatus.CREATED,
+        message: 'create pkm success',
+      };
+    } catch (error) {
+      return {
+        status_code: 500,
+        message: `server error: ${error}`,
+      };
+    }
   }
 }
