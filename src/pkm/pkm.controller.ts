@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   UploadedFile,
@@ -34,5 +35,17 @@ export class PkmController {
     @UploadedFile() document: Express.Multer.File,
   ): Promise<BaseResponse<string>> {
     return await this.pkmService.createPkm(account, pkmRequest, document);
+  }
+
+  @Post(':pkmId')
+  @UseInterceptors(FileInterceptor('document'))
+  async update(
+    @Authentication() account: Account,
+    @Body() pkmRequest: PkmRequest,
+    @Param('pkmId') pkmId:string,
+    @UploadedFile() document: Express.Multer.File,
+  ): Promise<BaseResponse<string>> {
+    
+    return await this.pkmService.updatePkm(account, pkmRequest,parseInt(pkmId) document);
   }
 }
