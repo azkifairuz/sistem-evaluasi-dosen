@@ -3,6 +3,7 @@ import { CommonModule } from './common/common.module';
 import { AuthDosenModule } from './auth-dosen/auth-dosen.module';
 import { PassportModule } from '@nestjs/passport';
 import { DosenPresensiModule } from './dosen-presensi/dosen-presensi.module';
+import { PkmModule } from './pkm/pkm.module';
 import { DosenProfileModule } from './dosen-profile/dosen-profile.module';
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { DosenProfileModule } from './dosen-profile/dosen-profile.module';
     AuthDosenModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     DosenPresensiModule,
+    PkmModule,
     DosenProfileModule,
   ],
   controllers: [],

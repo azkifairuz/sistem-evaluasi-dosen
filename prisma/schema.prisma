@@ -83,6 +83,7 @@ model SemesterAktif {
   id         Int      @id @default(autoincrement())
   semester   String
   tahun_ajar String
+  status     StatusSemester
   Jurnal     Jurnal[]
   PKM        PKM[]
 }
@@ -102,7 +103,10 @@ enum Tipe {
   online
   offline
 }
-
+enum StatusSemester {
+  active
+  inactive
+}
 enum Kegiatan {
   masuk
   keluar
