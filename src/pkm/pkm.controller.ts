@@ -42,10 +42,22 @@ export class PkmController {
   async update(
     @Authentication() account: Account,
     @Body() pkmRequest: PkmRequest,
-    @Param('pkmId') pkmId:string,
+    @Param('pkmId') pkmId: string,
     @UploadedFile() document: Express.Multer.File,
   ): Promise<BaseResponse<string>> {
-    
-    return await this.pkmService.updatePkm(account, pkmRequest,parseInt(pkmId) document);
+    return await this.pkmService.updatePkm(
+      account,
+      pkmRequest,
+      parseInt(pkmId),
+      document,
+    );
+  }
+
+  @Get(':pkmId')
+  async getPkmById(
+    @Authentication() account: Account,
+    @Param('pkmId') pkmId: string,
+  ) {
+    return await this.pkmService.getDetailPkm(account, parseInt(pkmId));
   }
 }
