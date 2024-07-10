@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -59,5 +60,13 @@ export class PkmController {
     @Param('pkmId') pkmId: string,
   ) {
     return await this.pkmService.getDetailPkm(account, parseInt(pkmId));
+  }
+
+  @Delete(':pkmId')
+  async delete(
+    @Authentication() account: Account,
+    @Param('pkmId') pkmId: string,
+  ) {
+    return await this.pkmService.delete(account, parseInt(pkmId));
   }
 }
